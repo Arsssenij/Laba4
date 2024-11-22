@@ -2,6 +2,8 @@
 #include <map>
 #include <memory>
 #include <stdexcept>
+#include <cstring>  // Для использования std::memcpy
+
 
 // Шаблонный класс-аллокатор, реализующий выделение памяти блоками заданного размера
 template <typename T, size_t BlockSize = 10>
@@ -57,7 +59,7 @@ private:
 
         // Копируем старые элементы в новый блок
         if (block) {
-            std::wmemcpy(new_block, block, allocated_elements * sizeof(T));
+            std::memcpy(new_block, block, allocated_elements * sizeof(T));
             std::free(block);
         }
 
