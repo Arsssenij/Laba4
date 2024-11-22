@@ -5,7 +5,7 @@ on:
   # событие запускаем
   push:
     branches:
-      - lab4
+      - main
       - feature/github_actions
 
 jobs:
