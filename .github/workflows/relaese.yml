@@ -1,33 +1,42 @@
 name: 'C++ CI'
 
+# Запускаем workflow при пуше в ветки lab1 или feature/github_actions
 on: 
+  # событие запускаем
   push:
     branches:
       - main
+      - feature/github_actions
 
 jobs:
   build_windows:
-    runs-on: windows-latest
-    permissions: write-all
+    runs-on: windows-latest # Запускается на Windows-latest
+    permissions: write-all # Предоставляет права на запись всем ресурсам
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3  # Клонирует репозиторий, включая подмодули
         with:
           submodules: true
-      - run: cmake . -DPATCH_VERSION=${{ github.run_number }}
+      - run: cmake . -DPATCH_VERSION=${{ github.run_number }} # Конфигурирует проект с помощью CMake, используя номер запуска для PATCH_VERSION
+       # Сборка проекта с помощью CMake 
       - run: cmake --build .
+       # Создание пакета
       - run: cmake --build . --target package
+      # Выводит список файлов в текущей директории
       - name: List files
         run: dir
+      # Создает релиз для Windows
       - name: Create Release (windows)
         id: create_release_windows
-        uses: actions/create-release@v1
+        uses: actions/create-release@v1 # Использует действие для создания релиза 
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Использует GITHUB_TOKEN для аутентификации
         with:
+          # Устанавливает tag_name, release_name и другие параметры 
           tag_name: windows${{ github.run_number }}
           release_name: Release ${{ github.run_number }} (windows)
-          draft: false
-          prerelease: false
+          draft: false # Не публикует релиз как черновик 
+          prerelease: false # Не публикует как предварительный релиз 
+      # Загружает файл релиза для Windows 
       - name: Upload Release Asset (windows)
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
@@ -35,39 +44,50 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release_windows.outputs.upload_url }}
-          asset_path: ./lab4-0.0.${{ github.run_number }}-win64.zip
-          asset_name: lab4-0.0.${{ github.run_number }}-win64.zip
+          asset_path: ./laba4-0.0.${{ github.run_number }}-win64.zip
+          asset_name: laba4-0.0.${{ github.run_number }}-win64.zip
           asset_content_type: application/zip
   
   build_ubuntu:
+    # Запускаем job на ubuntu-latest
     runs-on: ubuntu-latest
+    # Предоставляем разрешения на запись во все ресурсы
     permissions: write-all
     steps:
+      # Клонируем репозиторий, включая submodules
       - uses: actions/checkout@v3
         with:
           submodules: true
+      # Конфигурируем проект с помощью CMake, используя номер запуска для PATCH_VERSION
       - run: cmake . -DPATCH_VERSION=${{ github.run_number }}
+      # Строим проект с помощью CMake
       - run: cmake --build .
+      # Создаем пакет
       - run: cmake --build . --target package
-      - name: List files (ubuntu)
-        run: ls
-      - name: Create Release (ubuntu)
+      # Создаем релиз для Ubuntu
+      - name: Create Release (Ubuntu)
         id: create_release_ubuntu
+        # Используем action для создания релиза
         uses: actions/create-release@v1
+        # Используем GITHUB_TOKEN для аутентификации
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Устанавливаем tag_name, release_name и другие параметры
         with:
-          tag_name: ubuntu${{ github.run_number }}
-          release_name: Release ${{ github.run_number }} (ubuntu)
-          draft: false
-          prerelease: false 
-      - name: Upload Release Asset (ubuntu)
-        id: upload-release-asset
+          tag_name: v${{ github.run_number }} # Используем номер запуска для тега
+          release_name: Release ${{ github.run_number }} (Ubuntu)
+          draft: false # Не публикуем релиз в черновике
+          prerelease: false # Не публикуем как предварительную версию
+      # Загружаем релизный ассет для Ubuntu
+      - name: Upload Release Asset (Ubuntu)
+        id: upload-release-asset-ubuntu
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release_ubuntu.outputs.upload_url }}
-          asset_path: ./lab4-0.0.${{ github.run_number }}-Linux.zip
-          asset_name: lab4-0.0.${{ github.run_number }}-Linux.zip
-          asset_content_type: application/zip
+          asset_path: ./laba4-0.0.${{ github.run_number }}-Linux.deb
+          asset_name: laba4-0.0.${{ github.run_number }}-Linux.deb
+          asset_content_type: application/vnd.debian.binary-package
+          
+    
