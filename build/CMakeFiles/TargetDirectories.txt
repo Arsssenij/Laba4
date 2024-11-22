@@ -1,0 +1,9 @@
+D:/univer/Laba4/build/CMakeFiles/laba4.dir
+D:/univer/Laba4/build/CMakeFiles/package.dir
+D:/univer/Laba4/build/CMakeFiles/package_source.dir
+D:/univer/Laba4/build/CMakeFiles/edit_cache.dir
+D:/univer/Laba4/build/CMakeFiles/rebuild_cache.dir
+D:/univer/Laba4/build/CMakeFiles/list_install_components.dir
+D:/univer/Laba4/build/CMakeFiles/install.dir
+D:/univer/Laba4/build/CMakeFiles/install/local.dir
+D:/univer/Laba4/build/CMakeFiles/install/strip.dir
