@@ -57,7 +57,7 @@ private:
 
         // Копируем старые элементы в новый блок
         if (block) {
-            std::memcpy(new_block, block, allocated_elements * sizeof(T));
+            std::wmemcpy(new_block, block, allocated_elements * sizeof(T));
             std::free(block);
         }
 
